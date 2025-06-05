@@ -68,6 +68,15 @@ def add_entry():
 
     return render_template('add_entry.html')
 
+@app.route('/entries')
+def entries():
+    if not session.get('logged_in'):
+        return redirect(url_for('login'))
+
+    all_entries = CorrespondenceEntry.query.order_by(CorrespondenceEntry.date_received.desc()).all()
+    return render_template('entries.html', entries=all_entries)
+
+
 with app.app_context():
     db.create_all()
 

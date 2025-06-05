@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <h1 class="title">Wpisy korespondencji</h1>
+
+  {% if entries %}
+    <table class="table is-fullwidth is-striped">
+      <thead>
+        <tr>
+          <th>Data</th>
+          <th>Nadawca</th>
+          <th>Odbiorca</th>
+          <th>Temat</th>
+          <th>Uwagi</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for entry in entries %}
+          <tr>
+            <td>{{ entry.date_received.strftime('%Y-%m-%d') if entry.date_received else '' }}</td>
+            <td>{{ entry.sender }}</td>
+            <td>{{ entry.receiver }}</td>
+            <td>{{ entry.subject }}</td>
+            <td>{{ entry.notes }}</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  {% else %}
+    <p>Brak wpisów w bazie.</p>
+  {% endif %}
+{% endblock %}
