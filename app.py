@@ -1,7 +1,8 @@
 from flask import Flask, render_template, request, redirect, url_for, session
 from dotenv import load_dotenv
 import os
-from models import db
+from models import CorrespondenceEntry, db
+from datetime import datetime
 
 load_dotenv()
 
@@ -38,6 +39,34 @@ def index():
 def logout():
     session.clear()
     return redirect(url_for('login'))
+
+@app.route('/add', methods=['GET', 'POST'])
+def add_entry():
+    if not session.get('logged_in'):
+        return redirect(url_for('login'))
+
+    if request.method == 'POST':
+        date_received_str = request.form.get('date_received')
+        date_received = datetime.strptime(date_received_str, '%Y-%m-%d').date()
+        sender = request.form.get('sender')
+        receiver = request.form.get('receiver')
+        subject = request.form.get('subject')
+        notes = request.form.get('notes')
+
+        new_entry = CorrespondenceEntry(
+            date_received=date_received,
+            sender=sender,
+            receiver=receiver,
+            subject=subject,
+            notes=notes
+        )
+
+        db.session.add(new_entry)
+        db.session.commit()
+
+        return redirect(url_for('index'))
+
+    return render_template('add_entry.html')
 
 with app.app_context():
     db.create_all()

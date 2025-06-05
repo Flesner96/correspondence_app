@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <h1 class="title">Dodaj wpis korespondencji</h1>
+
+  <form method="POST" class="box">
+    <div class="field">
+      <label class="label">Data wpływu</label>
+      <div class="control">
+        <input class="input" type="date" name="date_received" required>
+      </div>
+    </div>
+
+    <div class="field">
+      <label class="label">Nadawca</label>
+      <div class="control">
+        <input class="input" type="text" name="sender" required>
+      </div>
+    </div>
+
+    <div class="field">
+      <label class="label">Odbiorca</label>
+      <div class="control">
+        <input class="input" type="text" name="receiver" required>
+      </div>
+    </div>
+
+    <div class="field">
+      <label class="label">Temat</label>
+      <div class="control">
+        <input class="input" type="text" name="subject" required>
+      </div>
+    </div>
+
+    <div class="field">
+      <label class="label">Uwagi</label>
+      <div class="control">
+        <textarea class="textarea" name="notes" rows="4"></textarea>
+      </div>
+    </div>
+
+    <div class="field">
+      <div class="control">
+        <button class="button is-primary">Zapisz wpis</button>
+      </div>
+    </div>
+  </form>
+{% endblock %}
