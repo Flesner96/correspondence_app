@@ -14,9 +14,9 @@
 </head>
 <body>
 <nav>
-    {% if session.logged_in %}
-  <a href="{{ url_for('logout') }}" class="button is-light is-small is-pulled-right">Wyloguj</a>
-{% endif %}
+    {% if session.get('logged_in') %}
+    <a href="{{ url_for('logout') }}" class="button is-light is-small is-pulled-right">Wyloguj</a>
+    {% endif %}
 </nav>
   <section class="section">
     <div class="container">
