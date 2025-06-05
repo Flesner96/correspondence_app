@@ -76,6 +76,35 @@ def entries():
     all_entries = CorrespondenceEntry.query.order_by(CorrespondenceEntry.date_received.desc()).all()
     return render_template('entries.html', entries=all_entries)
 
+@app.route('/edit/<int:id>', methods=['GET', 'POST'])
+def edit_entry(id):
+    if not session.get('logged_in'):
+        return redirect(url_for('login'))
+
+    entry = CorrespondenceEntry.query.get_or_404(id)
+
+    if request.method == 'POST':
+        entry.date_received = datetime.strptime(request.form.get('date_received'), '%Y-%m-%d').date()
+        entry.sender = request.form.get('sender')
+        entry.receiver = request.form.get('receiver')
+        entry.subject = request.form.get('subject')
+        entry.notes = request.form.get('notes')
+
+        db.session.commit()
+        return redirect(url_for('entries'))
+
+    return render_template('edit_entry.html', entry=entry)
+
+@app.route('/delete/<int:id>', methods=['POST'])
+def delete_entry(id):
+    if not session.get('logged_in'):
+        return redirect(url_for('login'))
+
+    entry = CorrespondenceEntry.query.get_or_404(id)
+    db.session.delete(entry)
+    db.session.commit()
+    return redirect(url_for('entries'))
+
 
 with app.app_context():
     db.create_all()

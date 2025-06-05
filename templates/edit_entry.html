@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <h1 class="title">Edytuj wpis</h1>
+
+  <form method="POST" class="box">
+    <div class="field">
+      <label class="label">Data wpływu</label>
+      <div class="control">
+        <input class="input" type="date" name="date_received" value="{{ entry.date_received }}" required>
+      </div>
+    </div>
+
+    <div class="field">
+      <label class="label">Nadawca</label>
+      <div class="control">
+        <input class="input" type="text" name="sender" value="{{ entry.sender }}" required>
+      </div>
+    </div>
+
+    <div class="field">
+      <label class="label">Odbiorca</label>
+      <div class="control">
+        <input class="input" type="text" name="receiver" value="{{ entry.receiver }}" required>
+      </div>
+    </div>
+
+    <div class="field">
+      <label class="label">Temat</label>
+      <div class="control">
+        <input class="input" type="text" name="subject" value="{{ entry.subject }}" required>
+      </div>
+    </div>
+
+    <div class="field">
+      <label class="label">Uwagi</label>
+      <div class="control">
+        <textarea class="textarea" name="notes">{{ entry.notes }}</textarea>
+      </div>
+    </div>
+
+    <div class="field">
+      <button class="button is-primary">Zapisz zmiany</button>
+    </div>
+  </form>
+{% endblock %}
