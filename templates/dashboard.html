@@ -3,7 +3,11 @@
 <section class="section">
   <div class="container">
     <h1 class="title">Księga korespondencji</h1>
-    <a href="{{ url_for('add_entry') }}" class="button is-primary mb-4">Dodaj nowy wpis</a>
+    <div class="buttons mb-4">
+      <a href="{{ url_for('add_entry') }}" class="button is-primary">Dodaj wpis</a>
+      <a href="{{ url_for('entries') }}" class="button is-link">Zobacz wszystkie</a>
+    </div>
+    <h1 class="title">Dzisiejsze wpisy</h1>
     <table class="table is-fullwidth is-striped is-hoverable">
       <thead>
         <tr>

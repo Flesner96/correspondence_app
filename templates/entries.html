@@ -2,7 +2,10 @@
 
 {% block content %}
   <h1 class="title">Wpisy korespondencji</h1>
-
+  <div class="buttons mb-4">
+    <a href="{{ url_for('dashboard') }}" class="button is-light">Strona główna</a>
+    <a href="{{ url_for('add_entry') }}" class="button is-primary">Dodaj wpis</a>
+  </div>
   {% if entries %}
     <table class="table is-fullwidth is-striped">
       <thead>

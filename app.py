@@ -3,8 +3,7 @@ from dotenv import load_dotenv
 import os
 from forms import CorrespondenceForm
 from models import CorrespondenceEntry, db
-from datetime import datetime
-
+from datetime import date
 from utils import login_required
 
 load_dotenv()
@@ -34,7 +33,8 @@ def login():
 @app.route('/')
 @login_required
 def dashboard():
-    entries = CorrespondenceEntry.query.order_by(CorrespondenceEntry.date_received.desc()).all()
+    today = date.today()
+    entries = CorrespondenceEntry.query.filter_by(date_received=today).order_by(CorrespondenceEntry.id.desc()).all()
     return render_template("dashboard.html", entries=entries)
 
 @app.route('/logout')
