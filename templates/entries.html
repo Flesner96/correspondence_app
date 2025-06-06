@@ -22,7 +22,9 @@
             <td>{{ entry.sender }}</td>
             <td>{{ entry.receiver }}</td>
             <td>{{ entry.subject }}</td>
-            <td>{{ entry.notes }}</td>
+            <td class="has-text-wrap" style="word-break: break-word;">
+              {{ entry.notes }}
+            </td> 
             <td class="is-nowrap">
                 <a href="{{ url_for('edit_entry', id=entry.id) }}" class="button is-small is-warning">Edytuj</a>
 

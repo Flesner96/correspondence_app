@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request, redirect, url_for, session
 from dotenv import load_dotenv
 import os
+from forms import CorrespondenceForm
 from models import CorrespondenceEntry, db
 from datetime import datetime
 
@@ -44,29 +45,19 @@ def logout():
 @app.route('/add', methods=['GET', 'POST'])
 @login_required
 def add_entry():
-
-    if request.method == 'POST':
-        date_received_str = request.form.get('date_received')
-        date_received = datetime.strptime(date_received_str, '%Y-%m-%d').date()
-        sender = request.form.get('sender')
-        receiver = request.form.get('receiver')
-        subject = request.form.get('subject')
-        notes = request.form.get('notes')
-
-        new_entry = CorrespondenceEntry(
-            date_received=date_received,
-            sender=sender,
-            receiver=receiver,
-            subject=subject,
-            notes=notes
+    form = CorrespondenceForm()
+    if form.validate_on_submit():
+        entry = CorrespondenceEntry(
+            date_received=form.date_received.data,
+            sender=form.sender.data,
+            receiver=form.receiver.data,
+            subject=form.subject.data,
+            notes=form.notes.data
         )
-
-        db.session.add(new_entry)
+        db.session.add(entry)
         db.session.commit()
-
-        return redirect(url_for('entries'))
-
-    return render_template('add_entry.html')
+        return redirect(url_for('dashboard'))
+    return render_template('add_entry.html', form=form)
 
 @app.route('/entries')
 @login_required
@@ -78,20 +69,15 @@ def entries():
 @app.route('/edit/<int:id>', methods=['GET', 'POST'])
 @login_required
 def edit_entry(id):
-
     entry = CorrespondenceEntry.query.get_or_404(id)
+    form = CorrespondenceForm(obj=entry)  
 
-    if request.method == 'POST':
-        entry.date_received = datetime.strptime(request.form.get('date_received'), '%Y-%m-%d').date()
-        entry.sender = request.form.get('sender')
-        entry.receiver = request.form.get('receiver')
-        entry.subject = request.form.get('subject')
-        entry.notes = request.form.get('notes')
-
+    if form.validate_on_submit():
+        form.populate_obj(entry)  
         db.session.commit()
-        return redirect(url_for('entries'))
+        return redirect(url_for('dashboard'))
 
-    return render_template('edit_entry.html', entry=entry)
+    return render_template('edit_entry.html', form=form, entry=entry)
 
 @app.route('/delete/<int:id>', methods=['POST'])
 @login_required
