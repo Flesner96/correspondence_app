@@ -1,50 +1,82 @@
 {% extends "base.html" %}
-
 {% block content %}
-<h1 class="title">Edytuj wpis</h1>
+<section class="section">
+  <div class="container">
+    <h1 class="title">Edytuj wpis</h1>
 
-<form method="POST">
-  {{ form.hidden_tag() }}
+    <form method="POST" x-data='{ direction: "{{ form.direction.data or "incoming" }}" }'>
+      {{ form.hidden_tag() }}
 
-  <div class="field">
-    {{ form.date_received.label(class="label") }}
-    <div class="control">
-      {{ form.date_received(class="input") }}
-    </div>
+      <!-- Rodzaj korespondencji -->
+      <div class="field">
+        <label class="label">Rodzaj korespondencji</label>
+        <div class="control">
+          <label class="radio">
+            <input type="radio" name="direction" value="incoming" x-model="direction">
+            Przychodząca
+          </label>
+          <label class="radio">
+            <input type="radio" name="direction" value="outgoing" x-model="direction">
+            Wychodząca
+          </label>
+        </div>
+      </div>
+
+      <!-- Data -->
+      <div class="field">
+        {{ form.date_received.label(class="label") }}
+        <div class="control">
+          {{ form.date_received(class="input") }}
+        </div>
+      </div>
+
+      <!-- Od kogo -->
+      <div class="field" x-show="direction === 'incoming'" x-transition>
+        {{ form.sender.label(class="label") }}
+        <div class="control">
+          {{ form.sender(class="input") }}
+        </div>
+      </div>
+
+      <!-- Do kogo -->
+      <div class="field" x-show="direction === 'outgoing'" x-transition>
+        {{ form.receiver.label(class="label") }}
+        <div class="control">
+          {{ form.receiver(class="input") }}
+        </div>
+      </div>
+
+      <!-- Temat -->
+      <div class="field">
+        {{ form.subject.label(class="label") }}
+        <div class="control">
+          {{ form.subject(class="input") }}
+        </div>
+      </div>
+
+      <!-- Uwagi -->
+      <div class="field">
+        {{ form.notes.label(class="label") }}
+        <div class="control">
+          {{ form.notes(class="textarea") }}
+        </div>
+      </div>
+
+      <!-- Nr sygnatury -->
+      <div class="field">
+        {{ form.reference_number.label(class="label") }}
+        <div class="control">
+          {{ form.reference_number(class="input") }}
+        </div>
+      </div>
+
+      <!-- Submit -->
+      <div class="field">
+        <div class="control">
+          {{ form.submit(class="button is-link") }}
+        </div>
+      </div>
+    </form>
   </div>
-
-  <div class="field">
-    {{ form.sender.label(class="label") }}
-    <div class="control">
-      {{ form.sender(class="input") }}
-    </div>
-  </div>
-
-  <div class="field">
-    {{ form.receiver.label(class="label") }}
-    <div class="control">
-      {{ form.receiver(class="input") }}
-    </div>
-  </div>
-
-  <div class="field">
-    {{ form.subject.label(class="label") }}
-    <div class="control">
-      {{ form.subject(class="input") }}
-    </div>
-  </div>
-
-  <div class="field">
-    {{ form.notes.label(class="label") }}
-    <div class="control">
-      {{ form.notes(class="textarea") }}
-    </div>
-  </div>
-
-  <div class="field">
-    <div class="control">
-      {{ form.submit(class="button is-link") }}
-    </div>
-  </div>
-</form>
+</section>
 {% endblock %}

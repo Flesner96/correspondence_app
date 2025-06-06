@@ -1,11 +1,18 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, DateField, TextAreaField, SubmitField
+from wtforms import RadioField, StringField, DateField, TextAreaField, SubmitField
 from wtforms.validators import DataRequired, Length
 
 class CorrespondenceForm(FlaskForm):
-    date_received = DateField("Data otrzymania", format='%Y-%m-%d', validators=[DataRequired()])
-    sender = StringField("Nadawca", validators=[DataRequired(), Length(max=100)])
-    receiver = StringField("Odbiorca", validators=[DataRequired(), Length(max=100)])
-    subject = StringField("Temat", validators=[DataRequired(), Length(max=200)])
-    notes = TextAreaField("Uwagi", validators=[Length(max=500)])
+    date_received = DateField("Data", validators=[DataRequired()])
+    sender = StringField("Od kogo")
+    receiver = StringField("Do kogo")
+    subject = StringField("Temat", validators=[DataRequired()])
+    notes = TextAreaField("Uwagi")
+    reference_number = StringField("Nr sygnatury", validators=[Length(max=50)])
+    direction = RadioField(
+    "Rodzaj korespondencji",
+    choices=[('incoming', 'Przyszła'), ('outgoing', 'Wychodząca')],
+    default='incoming',
+    validators=[DataRequired()]
+    )
     submit = SubmitField("Zapisz")

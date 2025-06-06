@@ -34,8 +34,9 @@ def login():
 @login_required
 def dashboard():
     today = date.today()
-    entries = CorrespondenceEntry.query.filter_by(date_received=today).order_by(CorrespondenceEntry.id.desc()).all()
-    return render_template("dashboard.html", entries=entries)
+    incoming = CorrespondenceEntry.query.filter_by(direction='incoming', date_received=today).all()
+    outgoing = CorrespondenceEntry.query.filter_by(direction='outgoing', date_received=today).all()
+    return render_template('dashboard.html', incoming=incoming, outgoing=outgoing)
 
 @app.route('/logout')
 def logout():
@@ -52,11 +53,14 @@ def add_entry():
             sender=form.sender.data,
             receiver=form.receiver.data,
             subject=form.subject.data,
-            notes=form.notes.data
+            notes=form.notes.data,
+            reference_number=form.reference_number.data,
+            direction=form.direction.data
         )
         db.session.add(entry)
         db.session.commit()
         return redirect(url_for('dashboard'))
+
     return render_template('add_entry.html', form=form)
 
 @app.route('/entries')
