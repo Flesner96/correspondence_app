@@ -4,6 +4,8 @@ import os
 from models import CorrespondenceEntry, db
 from datetime import datetime
 
+from utils import login_required
+
 load_dotenv()
 
 app = Flask(__name__)
@@ -21,7 +23,7 @@ def login():
         if (login_input == os.getenv("LOGIN") and 
             password_input == os.getenv("PASSWORD")):
             session['logged_in'] = True
-            return redirect(url_for('index'))
+            return redirect(url_for('dashboard'))
         else:
             error = "Nieprawidłowy login lub hasło"
             return render_template('login.html', error=error)
@@ -29,11 +31,10 @@ def login():
     return render_template('login.html')
 
 @app.route('/')
-def index():
-    if not session.get('logged_in'):
-        return redirect(url_for('login'))
-    else:
-        return render_template('dashboard.html')
+@login_required
+def dashboard():
+    entries = CorrespondenceEntry.query.order_by(CorrespondenceEntry.date_received.desc()).all()
+    return render_template("dashboard.html", entries=entries)
 
 @app.route('/logout')
 def logout():
@@ -41,9 +42,8 @@ def logout():
     return redirect(url_for('login'))
 
 @app.route('/add', methods=['GET', 'POST'])
+@login_required
 def add_entry():
-    if not session.get('logged_in'):
-        return redirect(url_for('login'))
 
     if request.method == 'POST':
         date_received_str = request.form.get('date_received')
@@ -64,22 +64,20 @@ def add_entry():
         db.session.add(new_entry)
         db.session.commit()
 
-        return redirect(url_for('index'))
+        return redirect(url_for('entries'))
 
     return render_template('add_entry.html')
 
 @app.route('/entries')
+@login_required
 def entries():
-    if not session.get('logged_in'):
-        return redirect(url_for('login'))
 
     all_entries = CorrespondenceEntry.query.order_by(CorrespondenceEntry.date_received.desc()).all()
     return render_template('entries.html', entries=all_entries)
 
 @app.route('/edit/<int:id>', methods=['GET', 'POST'])
+@login_required
 def edit_entry(id):
-    if not session.get('logged_in'):
-        return redirect(url_for('login'))
 
     entry = CorrespondenceEntry.query.get_or_404(id)
 
@@ -96,9 +94,8 @@ def edit_entry(id):
     return render_template('edit_entry.html', entry=entry)
 
 @app.route('/delete/<int:id>', methods=['POST'])
+@login_required
 def delete_entry(id):
-    if not session.get('logged_in'):
-        return redirect(url_for('login'))
 
     entry = CorrespondenceEntry.query.get_or_404(id)
     db.session.delete(entry)
